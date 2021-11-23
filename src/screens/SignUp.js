@@ -7,11 +7,30 @@ import { View ,
      Keyboard,
      TouchableWithoutFeedback,
      TouchableOpacity,} from 'react-native';
-
 import {Icon} from 'react-native-elements'
+import { auth } from '../../firebase';
 
 const SignUp = ({navigation}) =>{
     const [name,setName]= useState('')
+    const [email,setEmail]= useState('')
+    const [password,setPassword]= useState('')
+
+    const handleSignUp = async ()=> {
+      await auth.createUserWithEmailAndPassword(email,password)
+      .then(userCredentials =>{
+          console.log(userCredentials.user.email)
+          navigation.navigate('Tasks')
+           
+      })
+      .catch(error=> console.log(error))
+      setEmail('')
+      setPassword('')
+      
+    }
+   
+
+
+
     useEffect(()=>{
         StatusBar.setBarStyle('ligth-content',true)
     },[])
@@ -30,17 +49,21 @@ const SignUp = ({navigation}) =>{
                 placeholder="Email Address"
                 placeHolderTextColor='#333'
                 style={styles.input}
+                value={email}
                 autoCorrect={true}
                 autoCompletetype='email'
                 keyboadrType='email-address'
                 textContenttype='emailAddress'
+                onChangeText={(text)=>setEmail(text)}
                 />
                 <TextInput
                 placeholder="Password"
                 placeHoldeTextColor="#03045e"
+                value={password}
                 style={styles.input}
                 secureTextEntry={true}
                 textContenttype='emailAddress'
+                onChangeText={(text)=>setPassword(text)}
                 />
                 <TextInput
                 placeholder="Digite seu Nome"
@@ -54,7 +77,7 @@ const SignUp = ({navigation}) =>{
                 
                 />
                 <TouchableOpacity style={styles.loginButton} 
-                onPress={()=>navigation.navigate('Tasks')}>
+                    onPress={handleSignUp}>
                     <Text style={styles.loginButtonText}>Cadastrar</Text>
                 </TouchableOpacity>
 

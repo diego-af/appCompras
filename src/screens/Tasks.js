@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useRef} from 'react';
+import React,{useState,useEffect,useRef,useCallback} from 'react';
 import {View,
      Text, 
      FlatList,
@@ -6,10 +6,9 @@ import {View,
      Keyboard,
      TouchableOpacity,
     TouchableWithoutFeedback,
-    Alert,Animated
+    Alert,Animated,
     } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useRoute} from '@react-navigation/native'
 
 import {Input,Icon} from 'react-native-elements'
 
@@ -23,6 +22,7 @@ const Tasks = ()=>{
    
    const [task, setTask]= useState([]);
    const [text,setText] = useState('')
+   
    const fadeAnim = useRef(new Animated.Value(0)).current
 
   
@@ -40,13 +40,14 @@ const Tasks = ()=>{
        }
       
         setTask([...task, text])
+       
         
         Keyboard.dismiss()
    }
 
 
    async function remove(item){
-    setTask(task.filter(task=> task !== item))
+    setTask(task.filter(task => task !== item))
    }
 
    useEffect(()=>{
@@ -85,6 +86,34 @@ const Tasks = ()=>{
     saveData()
    },[task])
   
+
+   /*  const iconTeste = ((item,index)=>{
+        const find = task.filter(task => task == item[index])
+
+        if(find){
+            setIcon(true)
+            return(
+                
+            )
+        }
+       
+    }) */
+    
+   /* function iconTeste(index,item){
+      const inde = task.map((e,index) =>{
+          if(item.id == e.id ){
+             return{
+                 ...e,
+                 selected:true
+             }
+          }
+
+          
+      })
+     setIcon(inde)
+   } */
+
+  
     return(
        
         <TouchableWithoutFeedback onPress={()=>{
@@ -107,18 +136,25 @@ const Tasks = ()=>{
                 </TouchableOpacity>
 
                 </View>
-              
+
+               
                    <FlatList
                     data={task}
                     keyExtractor={item => item.toString()}
                     renderItem={({item,index})=>{
                         return(
                             <Animated.View style = {styles.itemContainer}>
+                               
+                          
                                 <Text style={styles.itemText}>{index+1} - {item}</Text>
                                 
                                 <TouchableOpacity onPress={() => remove(item)}>
                                     <Icon name="delete" type="fon-awesome" color="#e63946"/>
                                 </TouchableOpacity>
+                                
+                            
+                               
+                            
                             </Animated.View>
                         )
                     }}
@@ -184,6 +220,10 @@ const styles= StyleSheet.create({
     itemText:{
         fontSize:20,
         color:'white'
-    }
+    },
+   icon:{
+       
+        
+   }
 
 })

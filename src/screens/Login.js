@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
 import { View ,
     Text,
      TextInput,
@@ -9,8 +9,27 @@ import { View ,
      TouchableOpacity,} from 'react-native';
 
 import {Icon} from 'react-native-elements'
+import { auth } from '../../firebase';
 
 const Login = ({navigation}) =>{
+    const [password,setPassword]=useState('')
+    const [email,setEmail]=useState('')
+
+
+    async function logar(){
+
+        if(email == '' || password == ''){
+            alert("Preencha os campos")
+        }
+        auth.signInWithEmailAndPassword(email,password)
+        .then(userCredentials=>{
+            console.log(userCredentials.user.email)
+            navigation.navigate('Tasks')
+        }).catch(error=>console.log(error))
+
+        setEmail('')
+        setPassword('')
+    }
 
     useEffect(()=>{
         StatusBar.setBarStyle('ligth-content',true)
@@ -34,6 +53,9 @@ const Login = ({navigation}) =>{
                 autoCompletetype='email'
                 keyboadrType='email-address'
                 textContenttype='emailAddress'
+                value={email}
+                onChangeText={(text)=> setEmail(text)}
+
                 />
                 <TextInput
                 placeholder="Password"
@@ -41,12 +63,14 @@ const Login = ({navigation}) =>{
                 style={styles.input}
                 secureTextEntry={true}
                 textContenttype='emailAddress'
+                value={password}
+                onChangeText={(text)=> setPassword(text)}
                 />
                 <TouchableOpacity>
                     <Text style={styles.fpText}>Forget Password?</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.loginButton} 
-                onPress={()=>navigation.navigate('Tasks')}>
+                onPress={logar}>
                     <Text style={styles.loginButtonText}>Login</Text>
                 </TouchableOpacity>
 
